@@ -96,3 +96,17 @@ extension Date: TemplateDataRepresentable {
         return .double(timeIntervalSince1970)
     }
 }
+
+extension Array: TemplateDataRepresentable where Element: TemplateDataRepresentable {
+    /// See `TemplateDataRepresentable`
+    public func convertToTemplateData() throws -> TemplateData {
+        return try .array(self.map { try $0.convertToTemplateData() })
+    }
+}
+
+extension Dictionary: TemplateDataRepresentable where Key == String, Value: TemplateDataRepresentable {
+    /// See `TemplateDataRepresentable`
+    public func convertToTemplateData() throws -> TemplateData {
+        return try .dictionary(self.mapValues { try $0.convertToTemplateData() })
+    }
+}
