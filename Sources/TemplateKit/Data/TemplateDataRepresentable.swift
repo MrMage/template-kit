@@ -14,6 +14,13 @@ extension String: TemplateDataRepresentable {
     }
 }
 
+extension Data: TemplateDataRepresentable {
+    /// See `TemplateDataRepresentable`
+    public func convertToTemplateData() throws -> TemplateData {
+        return .string(self.hexEncodedString())
+    }
+}
+
 extension FixedWidthInteger {
     /// See `TemplateDataRepresentable`
     public func convertToTemplateData() throws -> TemplateData {
