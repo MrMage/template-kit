@@ -5,6 +5,11 @@ public final class TemplateDataEncoder {
 
     /// Encode an `Encodable` item to `TemplateData`.
     public func encode<E>(_ encodable: E, on worker: Worker) throws -> Future<TemplateData> where E: Encodable {
+        if let representable = encodable as? TemplateDataRepresentable {
+            // Shortcut if the argument is "trivially" representable as `TemplateData`.
+            return worker.future(try representable.convertToTemplateData())
+        }
+        
         let encoder = _TemplateDataEncoder(context: .init(data: .dictionary([:]), on: worker))
         try encodable.encode(to: encoder)
         return encoder.context.data.resolve(on: worker)
